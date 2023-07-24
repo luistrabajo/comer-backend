@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.c.controlu.security.filters.JwtAuthenticationFilter;
 import com.c.controlu.security.filters.JwtAuthorizationFilter;
@@ -24,7 +24,7 @@ import com.c.controlu.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig {
+public class SecurityConfig  {
 
     @Autowired
     JwtUtils jwtUtils;
@@ -34,6 +34,8 @@ public class SecurityConfig {
 
     @Autowired
     JwtAuthorizationFilter authorizationFilter;
+    
+  
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
@@ -43,9 +45,11 @@ public class SecurityConfig {
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
 
         return httpSecurity
+        		.cors()
+        		.and()
                 .csrf(config -> config.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/hello").permitAll();
+                    auth.requestMatchers("/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {
@@ -55,17 +59,8 @@ public class SecurityConfig {
                 .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+    
 
-//    @Bean
-//    UserDetailsService userDetailsService(){
-//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-//        manager.createUser(User.withUsername("santiago")
-//                .password("1234")
-//                .roles()
-//                .build());
-//
-//        return manager;
-//    }
 
     @Bean
     PasswordEncoder passwordEncoder(){
@@ -79,4 +74,8 @@ public class SecurityConfig {
                 .passwordEncoder(passwordEncoder)
                 .and().build();
     }
+    
+    
 }
+
+

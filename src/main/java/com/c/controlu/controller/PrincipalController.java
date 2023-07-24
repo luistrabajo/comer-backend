@@ -20,9 +20,10 @@ import java.util.stream.Collectors;
 
 
 @RestController
+@RequestMapping("/")
 public class PrincipalController {
 
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PrincipalController.class);
 	
 	@Autowired
@@ -34,18 +35,19 @@ public class PrincipalController {
 
 	
 	
-	@GetMapping("/hello")
+	@GetMapping("hello")
+	
 	public String hello() {
 		return "Hello World Not Secured";
 	}
 
-	@GetMapping("/helloSecured")
+	@GetMapping("helloSecured")
 	public String helloSecured() {
 		return "Hello World Secured";
 	}
 
 	
-	@PostMapping("/createUser")
+	@PostMapping("createUser")
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDTO createUserDTO){
 		
 		logger.info("CreateUserDTO: "+createUserDTO.getUsername()+"  "+createUserDTO.getPassword()+"  "+createUserDTO.getRoles()+"  "+createUserDTO.getEmail()+"  ");
@@ -71,7 +73,7 @@ public class PrincipalController {
 
 
 
-	@DeleteMapping("/deleteUser")
+	@DeleteMapping("deleteUser")
 	public String deleteUser(@RequestParam String id) {
 		userRepository.deleteById(Long.parseLong(id));
 		return "Se ha borrado el user con id".concat(id);
